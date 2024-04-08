@@ -1,4 +1,8 @@
 dependencies {
 	// https://github.com/DataDog/dd-sdk-android/blob/develop/CHANGELOG.md
 	implementation "com.datadoghq:dd-sdk-android-logs:2.7.1"
+	implementation "com.datadoghq:dd-sdk-android-okhttp:2.7.1"
+	implementation "com.datadoghq:dd-sdk-android-rum:2.7.1" 
+
+	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

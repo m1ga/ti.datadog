@@ -14,12 +14,18 @@ import com.datadog.android.core.configuration.Configuration;
 import com.datadog.android.log.Logger;
 import com.datadog.android.log.Logs;
 import com.datadog.android.log.LogsConfiguration;
+import com.datadog.android.okhttp.DatadogInterceptor;
 import com.datadog.android.privacy.TrackingConsent;
+import com.datadog.android.rum.Rum;
+import com.datadog.android.rum.RumConfiguration;
+import com.datadog.android.rum.tracking.ViewTrackingStrategy;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
+
+import okhttp3.OkHttpClient;
 
 
 @Kroll.module(name = "TiDatadog", id = "ti.datadog")
@@ -69,6 +75,21 @@ public class TiDatadogModule extends KrollModule {
                 .setRemoteSampleRate(100f)
                 .setBundleWithTraceEnabled(true)
                 .setName("titanium")
+                .build();
+
+    }
+    @Kroll.method
+    public void enableRumLogging(String appId) {
+        RumConfiguration rumConfig = new RumConfiguration.Builder(appId)
+                .trackLongTasks(4000)
+                .build();
+        Rum.enable(rumConfig);
+    }
+
+    @Kroll.method
+    public void enableNetworkEvents() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new DatadogInterceptor())
                 .build();
 
     }
