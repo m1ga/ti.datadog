@@ -1,6 +1,4 @@
-
 dependencies {
-	// Add the module's library dependencies here.
-	// See:  https://developer.android.com/studio/build/dependencies
-	 implementation "com.datadoghq:dd-sdk-android-logs:2.7.1"
+	// https://github.com/DataDog/dd-sdk-android/blob/develop/CHANGELOG.md
+	implementation "com.datadoghq:dd-sdk-android-logs:2.7.1"
 }
