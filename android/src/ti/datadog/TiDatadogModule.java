@@ -25,6 +25,7 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.util.TiConvert;
 
 import okhttp3.OkHttpClient;
 
@@ -33,6 +34,29 @@ import okhttp3.OkHttpClient;
 public class TiDatadogModule extends KrollModule {
 
     private static final String LCAT = "TiDatadogModule";
+    @Kroll.constant
+    static final int VERBOSITY_INFO = 0;
+    @Kroll.constant
+    static final int VERBOSITY_DEBUG = 1;
+    @Kroll.constant
+    static final int VERBOSITY_VERBOSE = 2;
+
+    @Kroll.constant
+    static final String LEVEL_DEBUG = "d";
+    @Kroll.constant
+    static final String LEVEL_INFO = "i";
+    @Kroll.constant
+    static final String LEVEL_WARNING = "w";
+    @Kroll.constant
+    static final String LEVEL_ERROR = "e";
+    @Kroll.constant
+    static final String LEVEL_WTF = "wtf";
+    @Kroll.constant
+    static final int TRACKING_PENDING = 0;
+    @Kroll.constant
+    static final int TRACKING_GRANTED = 1;
+    @Kroll.constant
+    static final int TRACKING_NOT_GRANTED = 2;
     Logger logger;
 
     public TiDatadogModule() {
@@ -51,11 +75,11 @@ public class TiDatadogModule extends KrollModule {
         int trackingConsent = opts.getInt("trackingConsent");
         Configuration configuration = new Configuration.Builder(clientToken, envName).build();
         TrackingConsent tc = TrackingConsent.PENDING;
-        if (trackingConsent == 0) {
+        if (trackingConsent == TRACKING_PENDING) {
             tc = TrackingConsent.PENDING;
-        } else if (trackingConsent == 1) {
+        } else if (trackingConsent == TRACKING_GRANTED) {
             tc = TrackingConsent.GRANTED;
-        } else if (trackingConsent == 2) {
+        } else if (trackingConsent == TRACKING_NOT_GRANTED) {
             tc = TrackingConsent.NOT_GRANTED;
         }
         Datadog.initialize(TiApplication.getAppRootOrCurrentActivity(), configuration, tc);
@@ -66,23 +90,33 @@ public class TiDatadogModule extends KrollModule {
 
 
     @Kroll.method
-    public void enableLogging() {
+    public void enableLogging(KrollDict options) {
+        String name = TiConvert.toString(options.get("name"), "titanium");
+        float sampleRate = TiConvert.toFloat(options.get("samplingRate"), 100f);
+
         LogsConfiguration logsConfig = new LogsConfiguration.Builder().build();
         Logs.enable(logsConfig);
 
         logger = new Logger.Builder()
                 .setNetworkInfoEnabled(true)
                 .setLogcatLogsEnabled(true)
-                .setRemoteSampleRate(100f)
+                .setRemoteSampleRate(sampleRate)
                 .setBundleWithTraceEnabled(true)
-                .setName("titanium")
+                .setName(name)
                 .build();
 
     }
     @Kroll.method
-    public void enableRumLogging(String appId) {
+    public void enableRumLogging(KrollDict options) {
+        String appId = options.getString("appId");
+        int longTasks = TiConvert.toInt(options.get("longTasks"), 4000);
+        if (appId.equals("")) {
+            Log.e(LCAT, "Please set the appId");
+            return;
+        }
+        
         RumConfiguration rumConfig = new RumConfiguration.Builder(appId)
-                .trackLongTasks(4000)
+                .trackLongTasks(longTasks)
                 .trackUserInteractions()
                 .build();
         Rum.enable(rumConfig);
@@ -98,15 +132,15 @@ public class TiDatadogModule extends KrollModule {
 
     @Kroll.method
     public void log(String msg, String level) {
-        if (level.equals("d")) {
+        if (level.equals(LEVEL_DEBUG)) {
             logger.d(msg);
-        } else if (level.equals("i")) {
+        } else if (level.equals(LEVEL_INFO)) {
             logger.i(msg);
-        } else if (level.equals("w")) {
+        } else if (level.equals(LEVEL_WARNING)) {
             logger.w(msg);
-        } else if (level.equals("e")) {
+        } else if (level.equals(LEVEL_ERROR)) {
             logger.e(msg);
-        } else if (level.equals("wtf")) {
+        } else if (level.equals(LEVEL_WTF)) {
             logger.wtf(msg);
         }
     }
@@ -114,11 +148,11 @@ public class TiDatadogModule extends KrollModule {
 
     @Kroll.setProperty
     public void setVerbosity(int value) {
-        if (value == 0) {
+        if (value == VERBOSITY_INFO) {
             Datadog.setVerbosity(android.util.Log.INFO);
-        } else if (value == 1) {
+        } else if (value == VERBOSITY_DEBUG) {
             Datadog.setVerbosity(android.util.Log.DEBUG);
-        } else if (value == 2) {
+        } else if (value == VERBOSITY_VERBOSE) {
             Datadog.setVerbosity(Log.VERBOSE);
         }
     }
