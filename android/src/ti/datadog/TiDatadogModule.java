@@ -16,6 +16,7 @@ import com.datadog.android.log.Logs;
 import com.datadog.android.log.LogsConfiguration;
 import com.datadog.android.okhttp.DatadogInterceptor;
 import com.datadog.android.privacy.TrackingConsent;
+import com.datadog.android.rum.GlobalRumMonitor;
 import com.datadog.android.rum.Rum;
 import com.datadog.android.rum.RumConfiguration;
 import com.datadog.android.rum.tracking.ViewTrackingStrategy;
@@ -82,6 +83,7 @@ public class TiDatadogModule extends KrollModule {
     public void enableRumLogging(String appId) {
         RumConfiguration rumConfig = new RumConfiguration.Builder(appId)
                 .trackLongTasks(4000)
+                .trackUserInteractions()
                 .build();
         Rum.enable(rumConfig);
     }
