@@ -8,12 +8,12 @@ Datadog = require("ti.datadog");
 Datadog.create({
   clientToken: "token",
   environment: "env",
-  trackingConsent: 0 // 0 = Pending, 1 = Granted, 2 = Not granted
+  trackingConsent: Datadog.TRACKING_GRANTED
 });
 
 Datadog.addEventListener("initialized", function(){
   Datadog.enableLogging();
-  Datadog.log("done", "i");
+  Datadog.log("done", Datadog.LEVEL_INFO);
 })
 ```
 
