@@ -131,6 +131,12 @@ public class TiDatadogModule extends KrollModule {
     }
 
     @Kroll.method
+    public void setUserInfo(String id, String name, String email)
+    {
+        Datadog.setUserInfo(id, name, email);
+    }
+    
+    @Kroll.method
     public void log(String msg, String level) {
         if (level.equals(LEVEL_DEBUG)) {
             logger.d(msg);

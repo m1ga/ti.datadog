@@ -14,6 +14,7 @@ Datadog.create({
 Datadog.addEventListener("initialized", function(){
   Datadog.enableLogging();
   Datadog.log("done", Datadog.LEVEL_INFO);
+  Datadog.setUserInfo('1234', 'John Doe', 'john@doe.com');
 })
 ```
 
