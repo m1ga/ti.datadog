@@ -2,7 +2,7 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.0
+version: 1.0.1
 apiversion: 4
 architectures: arm64-v8a armeabi-v7a x86 x86_64
 description: ti.datadog
@@ -15,4 +15,4 @@ name: ti.datadog
 moduleid: ti.datadog
 guid: 5394204b-b647-4eb6-be54-9260a95a9fcf
 platform: android
-minsdk: 12.3.0.GA
+minsdk: 12.2.0.GA

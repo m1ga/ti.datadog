@@ -29,6 +29,7 @@ Datadog.addEventListener("initialized", function(){
 * log("string", LEVEL CONSTANT)
 * enableNetworkEvents()
 * enableRumLogging({appId: "", longTasks: 4000})
+* setUserInfo("id","name", "email")
 
 ## Properties
 
