@@ -73,7 +73,11 @@ public class TiDatadogModule extends KrollModule {
         String clientToken = opts.getString("clientToken");
         String envName = opts.getString("environment");
         int trackingConsent = opts.getInt("trackingConsent");
-        Configuration configuration = new Configuration.Builder(clientToken, envName).build();
+        boolean crashReport = TiConvert.toBoolean("crashReport", true);
+        
+        Configuration configuration = new Configuration.Builder(clientToken, envName)
+                .setCrashReportsEnabled(crashReport)
+                .build();
         TrackingConsent tc = TrackingConsent.PENDING;
         if (trackingConsent == TRACKING_PENDING) {
             tc = TrackingConsent.PENDING;
@@ -82,6 +86,7 @@ public class TiDatadogModule extends KrollModule {
         } else if (trackingConsent == TRACKING_NOT_GRANTED) {
             tc = TrackingConsent.NOT_GRANTED;
         }
+
         Datadog.initialize(TiApplication.getAppRootOrCurrentActivity(), configuration, tc);
         if (Datadog.isInitialized()) {
             fireEvent("initialized", new KrollDict());
